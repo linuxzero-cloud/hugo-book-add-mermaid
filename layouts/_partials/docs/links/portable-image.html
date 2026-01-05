@@ -7,20 +7,18 @@
 {{- if and (not $isRemote) (not $isFragment) -}}
   {{- $path := strings.TrimPrefix "./" $url.Path -}}
   {{- $path = strings.TrimPrefix "/assets/" $path -}}
-
+  
   {{- with (.Page.Resources.Get $path) -}}
     {{- $destination = .RelPermalink -}}
+  {{- else with (resources.Get $path) -}}
+    {{- $destination = .RelPermalink -}}
   {{- else -}}
-    {{- with (resources.Get $path) -}}
-      {{- $destination = .RelPermalink -}}
-    {{- else -}}
-      {{- $mode := .Page.Site.Params.BookPortableLinks -}}
-      {{- $message := printf "Image reference '%s' not found in '%s'" .Destination .Page.RelPermalink -}}
-      {{- if eq $mode "warning" -}}
-        {{- warnf $message -}}
-      {{- else if eq $mode "error" -}}
-        {{- errorf $message -}}
-      {{- end -}}
+    {{- $mode := .Page.Site.Params.BookPortableLinks -}}
+    {{- $message := printf "Image reference '%s' not found in '%s'" .Destination .Page.RelPermalink -}}
+    {{- if eq $mode "warning" -}}
+    {{- warnf $message -}}
+    {{- else if eq $mode "error" -}}
+    {{- errorf $message -}}
     {{- end -}}
   {{- end -}}
 
@@ -32,4 +30,3 @@
   {{- end -}}
 {{- end -}}
 {{- return $destination -}}
-
